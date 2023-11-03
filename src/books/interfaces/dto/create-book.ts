@@ -1,4 +1,5 @@
-export interface IBook {
+export interface CreateBookDto {
+  id: string;
   title: string;
   description: string;
   authors: string;
