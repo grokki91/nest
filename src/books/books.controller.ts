@@ -29,20 +29,22 @@ export class BooksController {
   }
 
   @Get(':id')
-  public getBook(@Param() {id}): Promise<Book> {
+  public getBook(@Param() { id }): Promise<Book> {
     return this.bookService.getBook(id);
   }
 
   @Put(':id')
   public updateBook(
-    @Param() {id} : IParamId, 
+    @Param() { id }: IParamId,
     @Body() body: UpdateBookDto,
   ): Promise<HydratedDocument<BookDocument, any, any> | null> {
     return this.bookService.update(id, body);
   }
 
   @Delete(':id')
-  public deleteBook(@Param() { id } : IParamId): Promise<HydratedDocument<BookDocument, any, any> | null> {
+  public deleteBook(
+    @Param() { id }: IParamId,
+  ): Promise<HydratedDocument<BookDocument, any, any> | null> {
     return this.bookService.delete(id);
-}
+  }
 }
