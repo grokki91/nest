@@ -8,19 +8,19 @@ import {
   Put,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
-import { IBook } from './interfaces/book.interface';
 import { CreateBookDto } from './interfaces/dto/create-book';
-import { BookDocument } from './schemas/book.schema';
+import { Book, BookDocument } from './schemas/book.schema';
 import { IParamId } from './interfaces/param-id';
-import { HydratedDocument, QueryWithHelpers } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
+import { UpdateBookDto } from './interfaces/dto/update-book';
 
 @Controller('books')
 export class BooksController {
   constructor(private readonly bookService: BooksService) {}
 
   @Get()
-  public getBooks() {
-    this.bookService.getBooks();
+  public getBooks(): Promise<BookDocument[]> {
+    return this.bookService.getBooks();
   }
 
   @Post()
@@ -28,23 +28,21 @@ export class BooksController {
     return this.bookService.create(body);
   }
 
-  @Get()
-  public getBook(id: string): IBook {
-    return;
+  @Get(':id')
+  public getBook(@Param() {id}): Promise<Book> {
+    return this.bookService.getBook(id);
   }
 
-  @Put()
-  public updateBook(id: string): void {}
+  @Put(':id')
+  public updateBook(
+    @Param() {id} : IParamId, 
+    @Body() body: UpdateBookDto,
+  ): Promise<HydratedDocument<BookDocument, any, any> | null> {
+    return this.bookService.update(id, body);
+  }
 
-  @Delete()
-  public deleteBook(
-    @Param() { id }: IParamId,
-  ): QueryWithHelpers<
-    HydratedDocument<TodoDocument, {}, {}> | null,
-    HydratedDocument<TodoDocument, {}, {}>,
-    {},
-    TodoDocument
-  > {
+  @Delete(':id')
+  public deleteBook(@Param() { id } : IParamId): Promise<HydratedDocument<BookDocument, any, any> | null> {
     return this.bookService.delete(id);
-  }
+}
 }
