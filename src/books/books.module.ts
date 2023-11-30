@@ -12,4 +12,4 @@ import { Book, BookSchema } from './schemas/book.schema';
   providers: [BooksService],
   exports: [BooksService],
 })
-export class BookModel {}
+export class BooksModule {}
