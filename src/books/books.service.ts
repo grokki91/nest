@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Model, Connection, HydratedDocument } from 'mongoose';
+import { Model, Connection } from 'mongoose';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
-import { IBook } from './interfaces/book.interface';
-import { Book, BookDocument } from './schemas/book.schema';
+import { Book } from './schemas/book.schema';
 import { CreateBookDto } from './interfaces/dto/create-book';
 import { UpdateBookDto } from './interfaces/dto/update-book';
 
@@ -13,31 +12,24 @@ export class BooksService {
     @InjectConnection() private connection: Connection,
   ) {}
 
-  private readonly books: IBook[] = [];
-
-  public getBooks(): Promise<BookDocument[]> {
+  public getBooks(): Promise<Book[]> {
     return this.BookModel.find().exec();
   }
 
   public getBook(id: string): Promise<Book> {
-    return this.BookModel.findById(id).lean().exec();
+    return this.BookModel.findById(id).exec();
   }
 
-  public create(data: CreateBookDto): Promise<BookDocument> {
+  public create(data: CreateBookDto): Promise<Book> {
     const book = new this.BookModel(data);
     return book.save();
   }
 
-  public update(
-    id: string,
-    data: UpdateBookDto,
-  ): Promise<HydratedDocument<BookDocument, any, any> | null> {
+  public update(id: string, data: UpdateBookDto): Promise<Book> {
     return this.BookModel.findByIdAndUpdate({ _id: id }, data);
   }
 
-  public delete(
-    id: string,
-  ): Promise<HydratedDocument<BookDocument, any, any> | null> {
+  public delete(id: string): Promise<Book> {
     return this.BookModel.findOneAndRemove({ _id: id });
   }
 }

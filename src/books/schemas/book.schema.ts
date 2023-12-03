@@ -12,16 +12,16 @@ export class Book {
   public description: string;
 
   @Prop()
-  publicauthors: string;
+  public authors: string;
 
   @Prop()
-  publicfavorite: string;
+  public favorite: boolean;
 
   @Prop()
-  publicfileCover: string;
+  public fileCover: string;
 
   @Prop()
-  publicfileName: string;
+  public fileName: string;
 
   @Prop()
   public fileBook: string;

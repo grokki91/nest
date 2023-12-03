@@ -11,28 +11,27 @@ import {
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './interfaces/dto/create-book';
-import { Book, BookDocument } from './schemas/book.schema';
+import { Book } from './schemas/book.schema';
 import { IParamId } from './interfaces/param-id';
-import { HydratedDocument } from 'mongoose';
 import { UpdateBookDto } from './interfaces/dto/update-book';
 import { BookCreateInterceptor } from './interceptors/books.interceptors';
 import { ValidationPipe } from './validation/validation.pipe';
 import { validationSchema } from './validation/schema/validation.pipe.schema';
 
-@UsePipes(new ValidationPipe(validationSchema))
-@UseInterceptors(BookCreateInterceptor)
 @Controller('books')
 export class BooksController {
   constructor(private readonly bookService: BooksService) {}
 
   @Get()
-  public getBooks(): Promise<BookDocument[]> {
+  public getBooks(): Promise<Book[]> {
     // throw new HttpException('opp', 500);
     return this.bookService.getBooks();
   }
 
+  @UsePipes(new ValidationPipe(validationSchema))
+  @UseInterceptors(BookCreateInterceptor)
   @Post()
-  public createBook(@Body() body: CreateBookDto): Promise<BookDocument> {
+  public createBook(@Body() body: CreateBookDto): Promise<Book> {
     return this.bookService.create(body);
   }
 
@@ -41,18 +40,18 @@ export class BooksController {
     return this.bookService.getBook(id);
   }
 
+  @UsePipes(new ValidationPipe(validationSchema))
+  @UseInterceptors(BookCreateInterceptor)
   @Put(':id')
   public updateBook(
     @Param() { id }: IParamId,
     @Body() body: UpdateBookDto,
-  ): Promise<HydratedDocument<BookDocument, any, any> | null> {
+  ): Promise<Book> {
     return this.bookService.update(id, body);
   }
 
   @Delete(':id')
-  public deleteBook(
-    @Param() { id }: IParamId,
-  ): Promise<HydratedDocument<BookDocument, any, any> | null> {
+  public deleteBook(@Param() { id }: IParamId): Promise<Book> {
     return this.bookService.delete(id);
   }
 }
