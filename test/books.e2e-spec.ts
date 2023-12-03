@@ -16,7 +16,7 @@ describe('BooksController (e2e)', () => {
     getBooks: jest.fn().mockResolvedValue(mockBooks.books),
     getBook: jest.fn().mockResolvedValue(mockBooks.book),
     create: jest.fn().mockResolvedValue(mockBooks.book),
-    update: jest.fn().mockResolvedValue(200),
+    update: jest.fn().mockResolvedValue(mockBooks.book),
     delete: jest.fn().mockResolvedValue(mockBooks.book),
   };
 
