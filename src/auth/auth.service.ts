@@ -6,29 +6,28 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateDtoUser } from 'src/users/dto/create-user';
-import { User } from 'src/users/user.schema';
 import { UserService } from 'src/users/users.service';
-import { LoginDtoUser } from '../users/dto/login-user';
 import * as bcrypt from 'bcrypt';
+import { RegisterDto } from './dto/register-dto';
+import { LoginDto } from './dto/login-dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  public async login(user: LoginDtoUser) {
-    const existUser = this.userService.getUserByEmail(user.email);
-    if (!existUser) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+  public async login(dto: LoginDto) {
+    const user = await this.validateUser(dto.email, dto.password);
 
-    return existUser;
+    if (user) {
+      return this.createToken(user);
+    }
   }
 
-  public async register(user: CreateDtoUser) {
-    const candidate = await this.userService.getUserByEmail(user.email);
+  public async register(dto: RegisterDto) {
+    const candidate = await this.userService.getUserByEmail(dto.email);
     if (candidate) {
       throw new HttpException(
         'User with this email exists',
@@ -36,30 +35,31 @@ export class AuthService {
       );
     }
 
-    const hash = await bcrypt.hash(user.password, 5);
+    const hash = await bcrypt.hash(dto.password, 5);
     const newUser = await this.userService.createUser({
-      ...user,
+      ...dto,
       password: hash,
     });
+
     return this.createToken(newUser);
   }
 
-  public async validateUser(id: string): Promise<User> {
-    const user = await this.userService.getUser(id);
+  public async validateUser(email: string, password: string) {
+    const user = await this.userService.getUserByEmail(email);
+    const passwordEquals = await bcrypt.compare(password, user.password);
 
-    if (user) {
+    if (user && passwordEquals) {
       return user;
     }
 
-    return null;
+    throw new UnauthorizedException('Неверный email или пароль');
   }
 
   public createToken(user: CreateDtoUser) {
     const payload = {
-      sub: user._id,
       email: user.email,
       firstName: user.firstName,
     };
-    return { token: this.jwtService.sign(payload) };
+    return { token: `Bearer ${this.jwtService.sign(payload)}` };
   }
 }

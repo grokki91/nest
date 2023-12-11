@@ -28,7 +28,8 @@ export class UserService {
     return user;
   }
 
-  public async removeUser(id: string): Promise<User> {
-    return await this.UserModel.findByIdAndDelete(id);
+  public async removeUser(id: string): Promise<boolean> {
+    await this.UserModel.findByIdAndDelete(id);
+    return true;
   }
 }

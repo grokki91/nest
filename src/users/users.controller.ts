@@ -1,8 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { User } from './user.schema';
 import { UserService } from './users.service';
 import { CreateDtoUser } from './dto/create-user';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UserService) {}
@@ -23,7 +33,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  public remove(@Param() { id }): Promise<User> {
+  public remove(@Param() { id }): Promise<boolean> {
     return this.userService.removeUser(id);
   }
 }
