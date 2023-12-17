@@ -52,7 +52,7 @@ export class AuthService {
       return user;
     }
 
-    throw new UnauthorizedException('Неверный email или пароль');
+    throw new UnauthorizedException('Invalid email or password');
   }
 
   public createToken(user: CreateDtoUser) {

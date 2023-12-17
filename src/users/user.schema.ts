@@ -5,7 +5,7 @@ export type BookDocument = User & Document;
 
 @Schema()
 export class User {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true, index: true })
   public email: string;
 
   @Prop({ required: true })

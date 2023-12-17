@@ -11,19 +11,19 @@ export class UserService {
     @InjectConnection() private connection: Connection,
   ) {}
 
-  public async getUser(id: string): Promise<User> {
+  async getUser(id: string): Promise<User> {
     return await this.UserModel.findById(id);
   }
 
-  public async getUserByEmail(email: string): Promise<User> {
+  async getUserByEmail(email: string): Promise<User> {
     return await this.UserModel.findOne({ email }).exec();
   }
 
-  public async getAllUsers(): Promise<User[]> {
+  async getAllUsers(): Promise<User[]> {
     return await this.UserModel.find().exec();
   }
 
-  public async createUser(data: CreateDtoUser): Promise<User> {
+  async createUser(data: CreateDtoUser): Promise<User> {
     const user = await this.UserModel.create(data);
     return user;
   }
