@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Model, Connection, HydratedDocument } from 'mongoose';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
-import { IBook } from './interfaces/book.interface';
 import { Book, BookDocument } from './schemas/book.schema';
 import { CreateBookDto } from './interfaces/dto/create-book';
 import { UpdateBookDto } from './interfaces/dto/update-book';
@@ -12,8 +11,6 @@ export class BooksService {
     @InjectModel(Book.name) private BookModel: Model<Book>,
     @InjectConnection() private connection: Connection,
   ) {}
-
-  private readonly books: IBook[] = [];
 
   public getBooks(): Promise<BookDocument[]> {
     return this.BookModel.find().exec();

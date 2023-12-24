@@ -27,7 +27,6 @@ export class BooksController {
 
   @Get()
   public getBooks(): Promise<BookDocument[]> {
-    // throw new HttpException('opp', 500);
     return this.bookService.getBooks();
   }
 
